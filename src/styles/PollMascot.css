@@ -1,0 +1,116 @@
+.poll-mascot-container {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.poll-mascot {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+}
+
+.mascot-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.mascot-eyes {
+  display: flex;
+  gap: 15px;
+  font-size: 20px;
+}
+
+.eye {
+  transition: all 0.15s;
+}
+
+.eye.blink {
+  transform: scaleY(0.1);
+}
+
+.mascot-mouth {
+  font-size: 18px;
+  transform: scaleX(1.5);
+}
+
+.mascot-arms {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 5px;
+}
+
+.arm {
+  display: inline-block;
+}
+
+.arm.left {
+  transform: rotate(-30deg);
+}
+
+.arm.right {
+  transform: rotate(30deg);
+}
+
+.mascot-speech-bubble {
+  background: white;
+  color: #333;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 200px;
+  text-align: center;
+  position: relative;
+}
+
+.mascot-speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid white;
+}
+
+@media (max-width: 768px) {
+  .poll-mascot-container {
+    left: 10px;
+    bottom: 10px;
+  }
+  
+  .poll-mascot {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .mascot-speech-bubble {
+    font-size: 12px;
+    max-width: 150px;
+  }
+}

@@ -178,13 +178,18 @@
   text-align: center;
   padding: 1rem;
   background: white;
+  color: black;
   border-radius: 12px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .qr-container h3 {
-  color: #34495e;
+  color: rgb(0, 0, 0);
   margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  background-color: #7f8c8d;
 }
 
 .poll-id {
@@ -270,7 +275,7 @@
 
 .poll-type-selector label {
   font-weight: 600;
-  color: #34495e;
+  color: white;
 }
 
 .type-select {

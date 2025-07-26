@@ -1,0 +1,112 @@
+:root {
+  --theme-color-1: #1a1a2e;
+  --theme-color-2: #16213e;
+  --theme-color-3: #0f3460;
+  --theme-color-4: #533483;
+}
+
+.fun-theme {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--theme-color-1) 0%, var(--theme-color-2) 50%, var(--theme-color-3) 100%);
+  transition: background 0.5s ease;
+}
+
+
+.background-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.particle {
+  position: absolute;
+  font-size: 30px;
+  opacity: 0.6;
+  animation: twinkle 3s infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.2); }
+}
+
+.fun-message {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  color: white;
+  padding: 15px 30px;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  z-index: 100;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Space theme styles */
+.theme-space {
+  --glow-color: #8338ec;
+}
+
+/* Fun button animations */
+.fun-theme button {
+  position: relative;
+  overflow: hidden;
+}
+
+.fun-theme button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.fun-theme button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+
+/* Fun hover effects */
+.fun-theme .poll-form,
+.fun-theme .poll-display {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.fun-theme h1, .fun-theme h2, .fun-theme h3 {
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+
+.fun-theme select {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--glow-color);
+}
+
+.fun-theme input{
+  border: 2px solid var(--glow-color);
+}
+
+.fun-theme input:focus,
+.fun-theme select:focus {
+  box-shadow: 0 0 15px var(--glow-color);
+}

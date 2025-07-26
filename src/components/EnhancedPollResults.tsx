@@ -204,6 +204,7 @@ const EnhancedPollResults: React.FC<EnhancedPollResultsProps> = ({ poll }) => {
     return (
       <div className="word-cloud-results">
         <h3>Word Cloud ({poll.wordCloudResponses.length} responses)</h3>
+        <br />
         <div className="word-cloud">
           {sortedWords.map(([word, count], index) => (
             <motion.span

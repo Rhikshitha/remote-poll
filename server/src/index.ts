@@ -174,6 +174,10 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('send-emoji', ({ pollId, emoji, x, y }: { pollId: string; emoji: string; x: number; y: number }) => {
+    io.to(`poll-${pollId}`).emit('emoji-reaction', { emoji, x, y });
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
   });

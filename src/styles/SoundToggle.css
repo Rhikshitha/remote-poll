@@ -1,0 +1,32 @@
+.sound-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sound-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.sound-toggle.enabled {
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+}
+
+.sound-toggle.disabled {
+  opacity: 0.7;
+}

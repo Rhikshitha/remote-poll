@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
 import { useWindowSize } from 'react-use';
 import EnhancedPollResults from './EnhancedPollResults';
+import EmojiReaction from './EmojiReaction';
+// import PollMascot from './PollMascot';
+import soundManager from '../utils/soundManager';
 import '../styles/TeacherView.css';
 
 type PollType = 'multiple-choice' | 'rating' | 'word-cloud' | 'yes-no';
@@ -46,6 +49,7 @@ const TeacherView: React.FC = () => {
       setPollUrl(url);
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000);
+      soundManager.play('success');
     });
 
     newSocket.on('vote-update', (data: any) => {
@@ -93,6 +97,7 @@ const TeacherView: React.FC = () => {
       return;
     }
 
+    soundManager.play('click');
     socket.emit('create-poll', { 
       question, 
       options: pollOptions,
@@ -331,6 +336,15 @@ const TeacherView: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {currentPoll && socket && (
+        <EmojiReaction socket={socket} pollId={currentPoll.id} />
+      )}
+      
+      {/* <PollMascot 
+        mood={currentPoll ? 'excited' : 'happy'}
+        message={currentPoll ? undefined : "Ready to create a fun poll?"}
+      /> */}
     </div>
   );
 };

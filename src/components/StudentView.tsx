@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import { motion, AnimatePresence } from 'framer-motion';
+import EmojiReaction from './EmojiReaction';
+import soundManager from '../utils/soundManager';
 import '../styles/StudentView.css';
 
 type PollType = 'multiple-choice' | 'rating' | 'word-cloud' | 'yes-no';
@@ -118,6 +120,7 @@ const StudentView: React.FC = () => {
 
     setHasVoted(true);
     localStorage.setItem(`voted-${poll.id}`, 'true');
+    soundManager.play('pop');
   };
 
   const totalVotes = poll ? Object.values(poll.votes).reduce((sum, count) => sum + count, 0) : 0;
@@ -229,42 +232,91 @@ const StudentView: React.FC = () => {
         ) : (
           <div className="results-section">
             <h3>{hasVoted ? 'Thank you for voting!' : 'Current Results'}</h3>
-            <div className="results-list">
-              {poll.options.map((option, index) => {
-                const voteCount = poll.votes[option] || 0;
-                const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
-                
-                return (
-                  <motion.div
-                    key={option}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="result-item"
-                  >
-                    <div className="result-header">
-                      <span className="option-text">
-                        {option} {hasVoted && selectedOption === option && '(Your vote)'}
+            {poll.type === 'rating' ? (
+              <div className="rating-results">
+                {poll.ratings && poll.ratings.length > 0 ? (
+                  <>
+                    <div className="average-rating">
+                      <span className="rating-label">Average Rating</span>
+                      <span className="rating-value">
+                        {(poll.ratings.reduce((a, b) => a + b, 0) / poll.ratings.length).toFixed(1)} ⭐
                       </span>
-                      <span className="vote-count">{voteCount} votes</span>
                     </div>
-                    <div className="result-bar">
-                      <motion.div
-                        className="result-fill"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${percentage}%` }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                      />
+                    <div className="rating-breakdown">
+                      {[5, 4, 3, 2, 1].map(rating => {
+                        const count = poll.ratings!.filter(r => r === rating).length;
+                        const percentage = poll.ratings!.length > 0 ? (count / poll.ratings!.length) * 100 : 0;
+                        
+                        return (
+                          <motion.div
+                            key={rating}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: (5 - rating) * 0.1 }}
+                            className="rating-bar-item"
+                          >
+                            <span className="rating-star">{rating}⭐</span>
+                            <div className="rating-bar-container">
+                              <motion.div
+                                className="rating-bar-fill"
+                                initial={{ width: 0 }}
+                                animate={{ width: `${percentage}%` }}
+                                transition={{ duration: 0.5, delay: (5 - rating) * 0.1 }}
+                              />
+                            </div>
+                            <span className="rating-count">{count}</span>
+                          </motion.div>
+                        );
+                      })}
                     </div>
-                    <span className="percentage">{percentage.toFixed(1)}%</span>
-                  </motion.div>
-                );
-              })}
-            </div>
-            <p className="total-votes">Total votes: {totalVotes}</p>
+                    <p className="total-votes">Total ratings: {poll.ratings.length}</p>
+                  </>
+                ) : (
+                  <p>No ratings yet</p>
+                )}
+              </div>
+            ) : (
+              <div className="results-list">
+                {poll.options.map((option, index) => {
+                  const voteCount = poll.votes[option] || 0;
+                  const percentage = totalVotes > 0 ? (voteCount / totalVotes) * 100 : 0;
+                  
+                  return (
+                    <motion.div
+                      key={option}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="result-item"
+                    >
+                      <div className="result-header">
+                        <span className="option-text">
+                          {option} {hasVoted && selectedOption === option && '(Your vote)'}
+                        </span>
+                        <span className="vote-count">{voteCount} votes</span>
+                      </div>
+                      <div className="result-bar">
+                        <motion.div
+                          className="result-fill"
+                          initial={{ width: 0 }}
+                          animate={{ width: `${percentage}%` }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                        />
+                      </div>
+                      <span className="percentage">{percentage.toFixed(1)}%</span>
+                    </motion.div>
+                  );
+                })}
+                <p className="total-votes">Total votes: {totalVotes}</p>
+              </div>
+            )}
           </div>
         )}
       </motion.div>
+      
+      {poll && socket && (
+        <EmojiReaction socket={socket} pollId={poll.id} />
+      )}
     </div>
   );
 };
