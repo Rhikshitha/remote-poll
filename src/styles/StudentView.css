@@ -1,0 +1,159 @@
+.student-view {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ecf0f1;
+  padding: 1rem;
+}
+
+.student-view.loading,
+.student-view.error {
+  text-align: center;
+}
+
+.student-view.error h2 {
+  color: #e74c3c;
+}
+
+.poll-container {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.poll-container h1 {
+  color: #2c3e50;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.poll-closed-message {
+  text-align: center;
+  padding: 1rem;
+  background: #e74c3c;
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.voting-section h3 {
+  color: #34495e;
+  margin-bottom: 1rem;
+}
+
+.options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.option-button {
+  padding: 1rem;
+  background: #f8f9fa;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-align: left;
+}
+
+.option-button:hover {
+  background: #e8f4fd;
+  border-color: #3498db;
+}
+
+.option-button.selected {
+  background: #3498db;
+  color: white;
+  border-color: #2980b9;
+}
+
+.vote-button {
+  width: 100%;
+  padding: 14px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.vote-button:hover:not(:disabled) {
+  background: #27ae60;
+}
+
+.vote-button:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.results-section h3 {
+  color: #34495e;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.results-list {
+  margin-bottom: 1.5rem;
+}
+
+.result-item {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.option-text {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.vote-count {
+  color: #7f8c8d;
+  font-size: 14px;
+}
+
+.result-bar {
+  width: 100%;
+  height: 16px;
+  background: #ecf0f1;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.result-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3498db, #2ecc71);
+  border-radius: 8px;
+}
+
+.percentage {
+  display: inline-block;
+  color: #7f8c8d;
+  font-size: 12px;
+}
+
+.total-votes {
+  text-align: center;
+  color: #34495e;
+  font-weight: 500;
+}
