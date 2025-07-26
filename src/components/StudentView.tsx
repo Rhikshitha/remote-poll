@@ -4,12 +4,19 @@ import { io, Socket } from 'socket.io-client';
 import { motion, AnimatePresence } from 'framer-motion';
 import '../styles/StudentView.css';
 
+type PollType = 'multiple-choice' | 'rating' | 'word-cloud' | 'yes-no';
+
 interface Poll {
   id: string;
   question: string;
+  type: PollType;
   options: string[];
   votes: { [option: string]: number };
+  wordCloudResponses?: string[];
+  ratings?: number[];
   isActive: boolean;
+  timer?: number;
+  anonymous: boolean;
 }
 
 const StudentView: React.FC = () => {
@@ -18,6 +25,8 @@ const StudentView: React.FC = () => {
   const [poll, setPoll] = useState<Poll | null>(null);
   const [selectedOption, setSelectedOption] = useState<string>('');
   const [hasVoted, setHasVoted] = useState(false);
+  const [wordInput, setWordInput] = useState('');
+  const [selectedRating, setSelectedRating] = useState(0);
   const [userId] = useState(() => {
     const stored = localStorage.getItem('userId');
     if (stored) return stored;
@@ -43,8 +52,22 @@ const StudentView: React.FC = () => {
       }
     });
 
-    newSocket.on('vote-update', ({ votes }) => {
-      setPoll(prev => prev ? { ...prev, votes } : null);
+    newSocket.on('vote-update', (data: any) => {
+      setPoll(prev => {
+        if (!prev) return null;
+        
+        switch (data.type) {
+          case 'multiple-choice':
+          case 'yes-no':
+            return { ...prev, votes: data.votes };
+          case 'rating':
+            return { ...prev, ratings: data.ratings };
+          case 'word-cloud':
+            return { ...prev, wordCloudResponses: data.wordCloudResponses };
+          default:
+            return prev;
+        }
+      });
     });
 
     newSocket.on('poll-closed', () => {
@@ -61,13 +84,37 @@ const StudentView: React.FC = () => {
   }, [pollId]);
 
   const handleVote = () => {
-    if (!socket || !poll || !selectedOption || hasVoted) return;
+    if (!socket || !poll || hasVoted) return;
 
-    socket.emit('vote', {
-      pollId: poll.id,
-      option: selectedOption,
-      userId
-    });
+    switch (poll.type) {
+      case 'multiple-choice':
+      case 'yes-no':
+        if (!selectedOption) return;
+        socket.emit('vote', {
+          pollId: poll.id,
+          option: selectedOption,
+          userId
+        });
+        break;
+        
+      case 'rating':
+        if (selectedRating === 0) return;
+        socket.emit('vote', {
+          pollId: poll.id,
+          rating: selectedRating,
+          userId
+        });
+        break;
+        
+      case 'word-cloud':
+        if (!wordInput.trim()) return;
+        socket.emit('vote', {
+          pollId: poll.id,
+          wordCloudText: wordInput.trim(),
+          userId
+        });
+        break;
+    }
 
     setHasVoted(true);
     localStorage.setItem(`voted-${poll.id}`, 'true');
@@ -109,21 +156,60 @@ const StudentView: React.FC = () => {
 
         {poll.isActive && !hasVoted ? (
           <div className="voting-section">
-            <h3>Select your answer:</h3>
-            <div className="options-list">
-              {poll.options.map((option, index) => (
-                <motion.button
-                  key={option}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`option-button ${selectedOption === option ? 'selected' : ''}`}
-                  onClick={() => setSelectedOption(option)}
-                >
-                  {option}
-                </motion.button>
-              ))}
-            </div>
+            {(poll.type === 'multiple-choice' || poll.type === 'yes-no') && (
+              <>
+                <h3>Select your answer:</h3>
+                <div className="options-list">
+                  {poll.options.map((option, index) => (
+                    <motion.button
+                      key={option}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className={`option-button ${selectedOption === option ? 'selected' : ''}`}
+                      onClick={() => setSelectedOption(option)}
+                    >
+                      {option}
+                    </motion.button>
+                  ))}
+                </div>
+              </>
+            )}
+            
+            {poll.type === 'rating' && (
+              <>
+                <h3>Rate from 1 to 5:</h3>
+                <div className="rating-buttons">
+                  {[1, 2, 3, 4, 5].map((rating) => (
+                    <motion.button
+                      key={rating}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: rating * 0.05 }}
+                      className={`rating-button ${selectedRating === rating ? 'selected' : ''}`}
+                      onClick={() => setSelectedRating(rating)}
+                    >
+                      {rating}⭐
+                    </motion.button>
+                  ))}
+                </div>
+              </>
+            )}
+            
+            {poll.type === 'word-cloud' && (
+              <>
+                <h3>Enter your response:</h3>
+                <input
+                  type="text"
+                  value={wordInput}
+                  onChange={(e) => setWordInput(e.target.value)}
+                  placeholder="Type your answer..."
+                  className="word-input"
+                  maxLength={50}
+                />
+                <p className="char-count">{wordInput.length}/50</p>
+              </>
+            )}
             
             <motion.button
               initial={{ opacity: 0 }}
@@ -131,9 +217,13 @@ const StudentView: React.FC = () => {
               transition={{ delay: 0.3 }}
               className="vote-button"
               onClick={handleVote}
-              disabled={!selectedOption}
+              disabled={
+                (poll.type === 'multiple-choice' || poll.type === 'yes-no') && !selectedOption ||
+                poll.type === 'rating' && selectedRating === 0 ||
+                poll.type === 'word-cloud' && !wordInput.trim()
+              }
             >
-              Submit Vote
+              Submit
             </motion.button>
           </div>
         ) : (
