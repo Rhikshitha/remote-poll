@@ -53,6 +53,16 @@ app.get('/health', (_, res) => {
   res.json({ status: 'OK' });
 });
 
+app.get('/api/polls', (_, res) => {
+  const allPolls = Array.from(polls.values()).map(poll => ({
+    ...poll,
+    totalVotes: Object.values(poll.votes).reduce((sum, count) => sum + count, 0),
+    totalRatings: poll.ratings?.length || 0,
+    totalResponses: poll.wordCloudResponses?.length || 0
+  }));
+  res.json(allPolls);
+});
+
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 

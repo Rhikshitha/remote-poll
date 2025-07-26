@@ -14,8 +14,7 @@
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-  background-color: #7f8c8d;
+  color: black;
 }
 
 .results-grid {
@@ -72,7 +71,7 @@
 .word-cloud-results {
   text-align: center;
   h3 {
-    background-color: #7f8c8d;
+    color: black;
   }
 }
 

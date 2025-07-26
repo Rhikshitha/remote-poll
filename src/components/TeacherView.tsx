@@ -181,7 +181,12 @@ const TeacherView: React.FC = () => {
   return (
     <div className="teacher-view">
       {showConfetti && <Confetti width={width} height={height} />}
-      <h1>Remote Poll</h1>
+      <div className="teacher-header">
+        <h1>Remote Poll</h1>
+        <a href="/dashboard" className="dashboard-link">
+          View Dashboard
+        </a>
+      </div>
       
       <AnimatePresence mode="wait">
         {!currentPoll ? (
